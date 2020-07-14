@@ -172,4 +172,12 @@
         <item name="picture.folder_checked_dot">@drawable/picture_orange_oval</item>
     </style>
 
+    <style name="ThemeCustomDialog" parent="android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowCloseOnTouchOutside">false</item>
+    </style>
+
 </resources>
