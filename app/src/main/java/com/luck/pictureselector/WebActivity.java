@@ -60,11 +60,14 @@ public class WebActivity extends AppCompatActivity {
     private WebView webView;
 
     private String webUrl = "https://192.168.199.100:3001/examination";
+    // private String webUrl = "https://192.168.199.100:3001/examination/exam";
     //private String webUrl = "http://192.168.199.100:8848/htmlDemo/file.html";
 
     private ValueCallback valueCallback;
 
     private int RC_CAMERA_AND_LOCATION = 100;
+    //是否阻止退出
+    private boolean isPreventBack = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,13 +115,7 @@ public class WebActivity extends AppCompatActivity {
         webSetting.setPluginState(WebSettings.PluginState.ON_DEMAND);
 
 
-        webView.addJavascriptInterface(new Object() {
-            @JavascriptInterface
-            public void h5_finish() {
-                WebActivity.this.finish();
-            }
-
-        }, "android");
+        webView.addJavascriptInterface(new InteractionChannel(), "androidJSBridge");
 
         webView.setWebViewClient(new MyWebViewClient());
         webView.setWebChromeClient(new MyWebChromeClient());
@@ -207,6 +204,7 @@ public class WebActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -273,8 +271,6 @@ public class WebActivity extends AppCompatActivity {
     }
 
     private void openCamera() {
-
-
         // 进入相册 以下是例子：不需要的api可以不写
         PictureSelector.create(this)
                 .openCamera(PictureMimeType.ofImage())// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
@@ -331,12 +327,10 @@ public class WebActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
-            String url=webView.getUrl();
-            String []urlArr=url.split("/");
-            String lastPath=urlArr[urlArr.length-1];
-            if ("paper".equals(lastPath)){
+            String lastPath = getCurrentPath();
+            if ("paper".equals(lastPath) && isPreventBack) {
                 showWarningDialog();
-            }else{
+            } else {
                 webView.goBack();
             }
             return true;
@@ -344,8 +338,45 @@ public class WebActivity extends AppCompatActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    private void showWarningDialog(){
-        SelectMenuDialog dialog=new SelectMenuDialog(this);
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        String lastPath = getCurrentPath();
+        if ("paper".equals(lastPath) && isPreventBack) {
+            webView.evaluateJavascript("javascript:clickHome()", new ValueCallback<String>() {
+                @Override
+                public void onReceiveValue(String value) {
+                    //此处为 js 返回的结果
+                    Log.d("tag", "发送成功");
+                }
+            });
+        }
+    }
+
+    //js和java交互通道
+    class InteractionChannel {
+        @JavascriptInterface
+        public void listenBack(boolean isPrevent) {
+            isPreventBack = isPrevent;
+            Log.d("tag", "preventBack" + isPreventBack);
+        }
+    }
+
+    private String getCurrentPath() {
+        String url = webView.getUrl();
+        String[] urlArr = url.split("/");
+        String lastPath = urlArr[urlArr.length - 1];
+        return lastPath;
+    }
+
+    private void showWarningDialog() {
+        SelectMenuDialog dialog = new SelectMenuDialog(this);
+        dialog.setListener(new SelectMenuDialog.OnMenuSelectListener() {
+            @Override
+            public void callback() {
+                webView.goBack();
+            }
+        });
         dialog.show();
     }
 
@@ -355,7 +386,7 @@ public class WebActivity extends AppCompatActivity {
         if (webView != null) {
             webView.stopLoading();
             //
-            webView.clearCache(true);
+//            webView.clearCache(true);
 //            webView.clearHistory();
 //            webView.pauseTimers();
             webView.destroy();
