@@ -59,8 +59,8 @@ public class WebActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private WebView webView;
 
-    private String webUrl = "https://192.168.199.100:3001/examination";
-    // private String webUrl = "https://192.168.199.100:3001/examination/exam";
+    //private String webUrl = "https://192.168.199.100:3001/examination";
+    private String webUrl = "https://192.168.199.100:3001/examination/exam";
     //private String webUrl = "http://192.168.199.100:8848/htmlDemo/file.html";
 
     private ValueCallback valueCallback;
@@ -324,34 +324,34 @@ public class WebActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
-            String lastPath = getCurrentPath();
-            if ("paper".equals(lastPath) && isPreventBack) {
-                showWarningDialog();
-            } else {
-                webView.goBack();
-            }
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        String lastPath = getCurrentPath();
-        if ("paper".equals(lastPath) && isPreventBack) {
-            webView.evaluateJavascript("javascript:clickHome()", new ValueCallback<String>() {
-                @Override
-                public void onReceiveValue(String value) {
-                    //此处为 js 返回的结果
-                    Log.d("tag", "发送成功");
-                }
-            });
-        }
-    }
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
+//            String lastPath = getCurrentPath();
+//            if ("paper".equals(lastPath) && isPreventBack) {
+//                showWarningDialog();
+//            } else {
+//                webView.goBack();
+//            }
+//            return true;
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
+//
+//    @Override
+//    protected void onUserLeaveHint() {
+//        super.onUserLeaveHint();
+//        String lastPath = getCurrentPath();
+//        if ("paper".equals(lastPath) && isPreventBack) {
+//            webView.evaluateJavascript("javascript:clickHome()", new ValueCallback<String>() {
+//                @Override
+//                public void onReceiveValue(String value) {
+//                    //此处为 js 返回的结果
+//                    Log.d("tag", "发送成功");
+//                }
+//            });
+//        }
+//    }
 
     //js和java交互通道
     class InteractionChannel {
