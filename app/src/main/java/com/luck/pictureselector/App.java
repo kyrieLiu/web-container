@@ -2,6 +2,7 @@ package com.luck.pictureselector;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.camera.camera2.Camera2Config;
@@ -11,6 +12,7 @@ import com.luck.picture.lib.app.IApp;
 import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.crash.PictureSelectorCrashUtils;
 import com.luck.picture.lib.engine.PictureSelectorEngine;
+import com.tencent.smtt.sdk.QbSdk;
 
 
 /**
@@ -35,6 +37,23 @@ public class App extends Application implements IApp, CameraXConfig.Provider {
 
         });
         /** PictureSelector日志管理配制结束 **/
+
+//        QbSdk.PreInitCallback cb = new QbSdk.PreInitCallback() {
+//
+//            @Override
+//            public void onViewInitFinished(boolean arg0) {
+//                // TODO Auto-generated method stub
+//                //x5內核初始化完成的回调，为true表示x5内核加载成功，否则表示x5内核加载失败，会自动切换到系统内核。
+//                Log.d("tag", " onViewInitFinished is " + arg0);
+//            }
+//
+//            @Override
+//            public void onCoreInitFinished() {
+//                Log.d("tag","finsih");
+//            }
+//        };
+//        //x5内核初始化接口
+//        QbSdk.initX5Environment(getApplicationContext(),  cb);
 
     }
 

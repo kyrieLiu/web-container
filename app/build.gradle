@@ -47,4 +47,5 @@ dependencies {
     implementation 'pub.devrel:easypermissions:3.0.0'
     // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.1'
     implementation 'com.jakewharton:butterknife:7.0.1'
+    implementation files('libs/tbs_sdk_thirdapp.jar')
 }
